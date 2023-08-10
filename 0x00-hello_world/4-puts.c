@@ -1,4 +1,6 @@
 #include <stdio.h>
+/* main function "entry point of programm"
+ *runned successfully */
 
 int main(void)
 {
