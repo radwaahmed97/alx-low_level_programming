@@ -18,7 +18,7 @@ void print_buffer(char *b, int size)
 		for (byte_idx = 0; byte_idx < 10; byte_idx++)
 		{
 			(offset + byte_idx < size) ? printf("%02x",
-					b[offset + byte_idx]) : printf(" ");
+					b[offset + byte_idx]) : printf("  ");
 			(byte_idx % 2) ? printf(" ") : 0;
 		}
 
