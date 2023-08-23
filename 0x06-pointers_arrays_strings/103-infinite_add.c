@@ -23,9 +23,15 @@ char *add_strings(char *n1, char *n2, char *r, int r_index)
 		tens = nu / 10;
 	}
 
-	for (; *n2; n2--)
+	for (; *n1; n1--, r_index--)
 	{
-		r_index--;
+		nu = (*n1 - '0') + tens;
+		*(r + r_index) = (nu % 10) + '0';
+		tens = nu / 10;
+	}
+
+	for (; *n2; n2--, r_index--)
+	{
 		nu = (*n2 - '0') + tens;
 		*(r + r_index) = (nu % 10) + '0';
 		tens = nu / 10;
