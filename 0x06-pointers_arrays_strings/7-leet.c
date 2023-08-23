@@ -10,7 +10,7 @@
 char *leet(char *s)
 {
 	int i1 = 0, i2;
-	char leet[8] = {'0', 'L', '?', 'E', 'A', '?', '?', 'T'};
+	char leet[8] = {'O', 'L', '?', 'E', 'A', '?', '?', 'T'};
 
 	while (s[i1])
 	{
