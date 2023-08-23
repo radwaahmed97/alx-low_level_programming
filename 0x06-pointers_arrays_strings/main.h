@@ -9,5 +9,6 @@ char *cap_string(char *);
 char *leet(char *);
 int _isseparator(char c);
 int _islower(int c);
+char *rot13(char *);
 
 
