@@ -1,4 +1,3 @@
 #!/bin/bash
-gcc -c *.c
-ar rc 1iball.a *.o
+gcc -c -Wall -Wextra *.c && ar -rcs liball.a *.o
 
