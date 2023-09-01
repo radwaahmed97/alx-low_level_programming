@@ -10,44 +10,32 @@
 
 int main(int argc, char *argv[] __attribute__((unused)))
 {
-	int tot, count;
-	unsigned int i;
-	char *p;
-	int cents[] = {25, 1, 5, 2};
+	int i, cents, coins = 0;
+	int denominations[5];
+	int num_denominations;
 
 	if (argc != 2)
+		return (printf("Error\n"), 1);
+
+	cents = atoi(argv[1]);
+
+	if (cents < 0)
+		return (printf("0\n"), 0);
+
+	denominations[0] = 25;
+	denominations[1] = 10;
+	denominations[2] = 5;
+	denominations[3] = 2;
+	denominations[4] = 1;
+
+	num_denominations = sizeof(denominations) / sizeof(int);
+
+	for (i = 0; i < num_denominations && cents; i++)
 	{
-		printf("Error\n");
-		return (1);
+		coins += cents / denominations[i];
+		cents %= denominations[i];
 	}
 
-	tot = strtol(argv[1], &p, 10);
-	count = 0;
-
-	if (!*p)
-	{
-		while (tot > 1)
-		{
-			for (i = 0; i < sizeof(cents[i]); i++)
-			{
-				if (tot >= cents[i])
-				{
-					count += tot / cents[i];
-					tot = tot % cents[i];
-				}
-			}
-		}
-
-		if (tot == 1)
-		{
-			count++;
-		}
-	}
-	else
-	{
-		printf("Error\n");
-		return (1);
-	}
-	printf("%d\n", count);
+	printf("%d\n", coins);
 	return (0);
 }
