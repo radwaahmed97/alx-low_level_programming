@@ -59,7 +59,7 @@ int main(int ac, char **av)
 
 	if (ac != 3 || !isNumber(av[1]) || !isNumber(av[2]))
 	{
-		printf("Eroor\n");
+		printf("Error\n");
 		exit(98);
 	}
 
