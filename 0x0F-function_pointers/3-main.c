@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 /**
- * main - ...
+ * main - performing simple operations
  * @argc: arguments counter
  * @argv: arguments vector
  * Return: 0
