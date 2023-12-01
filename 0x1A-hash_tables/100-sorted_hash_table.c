@@ -29,6 +29,74 @@ shash_table_t *shash_table_create(unsigned long int size)
 }
 
 /**
+ * make_shash_node - makes a node for the sorted hash table
+ * @key: key for the data
+ * @value: data to be stored
+ *
+ * Return: pointer to the new node, or NULL on failure
+ */
+shash_node_t *make_shash_node(const char *key, const char *value)
+{
+	shash_node_t *shnode;
+
+	shnode = malloc(sizeof(shash_node_t));
+	if (shnode == NULL)
+		return (NULL);
+	shnode->key = strdup(key);
+	if (shnode->key == NULL)
+	{
+		free(shnode);
+		return (NULL);
+	}
+	shnode->value = strdup(value);
+	if (shnode->value == NULL)
+	{
+		free(shnode->key);
+		free(shnode);
+		return (NULL);
+	}
+	shnode->next = shnode->snext = shnode->sprev = NULL;
+	return (shnode);
+}
+
+/**
+ * to_sortedlist - add a node to the sorted (by key's ASCII) linked list
+ * @table: the sorted hash table
+ * @node: the node to add
+ *
+ * Return: void
+ */
+void to_sortedlist(shash_table_t *table, shash_node_t *node)
+{
+	shash_node_t *tempo;
+
+	if (table->shead == NULL && table->stail == NULL)
+	{
+		table->shead = table->stail = node;
+		return;
+	}
+	tempo = table->shead;
+	while (tempo != NULL)
+	{
+		if (strcmp(node->key, tempo->key) < 0)
+		{
+			node->snext = tempo;
+			node->sprev = tempo->sprev;
+			tempo->sprev = node;
+			if (node->sprev != NULL)
+				node->sprev->snext = node;
+			else
+				table->shead = node;
+			return;
+		}
+		tempo = tempo->snext;
+	}
+	node->sprev = table->stail;
+	table->stail->snext = node;
+	table->stail = node;
+}
+
+/**
  * shash_table_set - Adds an element to a sorted hash table.
  * @ht: A pointer to the sorted hash table.
  * @key: The key to add - cannot be an empty string.
@@ -39,76 +107,34 @@ shash_table_t *shash_table_create(unsigned long int size)
  */
 int shash_table_set(shash_table_t *ht, const char *key, const char *value)
 {
-	shash_node_t *newnode, *tempo;
-	char *value_copy;
-	unsigned long int index;
+	unsigned long int i;
+	char *newvalue;
+	shash_node_t *shnode, *tempo;
 
-	if (ht == NULL || key == NULL || *key == '\0' || value == NULL)
+	if (ht == NULL || ht->array == NULL || ht->size == 0 ||
+	    key == NULL || strlen(key) == 0 || value == NULL)
 		return (0);
-
-	value_copy = strdup(value);
-	if (value_copy == NULL)
-		return (0);
-
-	index = key_index((const unsigned char *)key, ht->size);
-	tempo = ht->shead;
-	while (tempo)
+	i = key_index((const unsigned char *)key, ht->size);
+	tempo = ht->array[i];
+	while (tempo != NULL)
 	{
 		if (strcmp(tempo->key, key) == 0)
 		{
+			newvalue = strdup(value);
+			if (newvalue == NULL)
+				return (0);
 			free(tempo->value);
-			tempo->value = value_copy;
+			tempo->value = newvalue;
 			return (1);
 		}
-		tempo = tempo->snext;
+		tempo = tempo->next;
 	}
-
-	newnode = malloc(sizeof(shash_node_t));
-	if (newnode == NULL)
-	{
-		free(value_copy);
+	shnode = make_shash_node(key, value);
+	if (shnode == NULL)
 		return (0);
-	}
-	newnode->key = strdup(key);
-	if (newnode->key == NULL)
-	{
-		free(value_copy);
-		free(newnode);
-		return (0);
-	}
-	newnode->value = value_copy;
-	newnode->next = ht->array[index];
-	ht->array[index] = newnode;
-
-	if (ht->shead == NULL)
-	{
-		newnode->sprev = NULL;
-		newnode->snext = NULL;
-		ht->shead = newnode;
-		ht->stail = newnode;
-	}
-	else if (strcmp(ht->shead->key, key) > 0)
-	{
-		newnode->sprev = NULL;
-		newnode->snext = ht->shead;
-		ht->shead->sprev = newnode;
-		ht->shead = newnode;
-	}
-	else
-	{
-		tempo = ht->shead;
-		while (tempo->snext != NULL &&
-				strcmp(tempo->snext->key, key) < 0)
-			tempo = tempo->snext;
-		newnode->sprev = tempo;
-		newnode->snext = tempo->snext;
-		if (tempo->snext == NULL)
-			ht->stail = newnode;
-		else
-			tempo->snext->sprev = newnode;
-		tempo->snext = newnode;
-	}
-
+	shnode->next = ht->array[i];
+	ht->array[i] = shnode;
+	to_sortedlist(ht, shnode);
 	return (1);
 }
 
