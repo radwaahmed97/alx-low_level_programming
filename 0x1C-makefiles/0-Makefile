@@ -1,0 +1,8 @@
+#USAGE
+
+.PHONY: all
+
+all: school school.o
+
+school: school.c main.c
+	gcc main.c school.c -o school
