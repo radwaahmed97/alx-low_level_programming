@@ -1,9 +1,5 @@
-#USAGE
-
-.PHONY: all
-
 CC := gcc
-SRC := *.c
+SRC := main.c school.c
 
 all: $(SRC)
-	$(CC) main.c school.c  -o school
+	$(CC) $(SRC) -o school
