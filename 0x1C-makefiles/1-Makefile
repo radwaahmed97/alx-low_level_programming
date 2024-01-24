@@ -3,7 +3,7 @@
 .PHONY: all
 
 CC := gcc
-SRC := main.c school.c
+SRC := *.c
 
 all: $(SRC)
-	$(CC) $(SRC) -o school
+	$(CC) main.c school.c  -o school
